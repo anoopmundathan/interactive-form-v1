@@ -39,6 +39,7 @@ a {
 form {
 	padding: .875em 1.875em 1.875em;
 	background: #85b5ca;
+	border-radius: 5px;
 }
 
 fieldset,
@@ -82,6 +83,10 @@ select {
 	margin-bottom: 1.125em;	
 }
 
+select {
+	height: 50px;
+}
+
 input, select {
 	font-size: 1em;
 	font-weight: 500;
@@ -103,7 +108,6 @@ input[type="radio"] {
 }
 
 button {
-
 	color: #fff;
 	padding: .55em 1.25em;
 	background: #22627e;
@@ -115,30 +119,11 @@ button:hover {
 	background: #184c62;
 }
 
-#error {
+label[id$="error"] {
 	color: firebrick;
 	text-align: center;
 }
 
-.conflict-label {
-	color: #fff;
-}
-
-#title {
-	width: 100%;
-	height: 50px;
-}
-
-#size, 
-#design, 
-#color, 
-#payment,
-#exp-month,
-#exp-year
-{
-	height: 50px;
-
-}
 /* ================================= 
   Page Styles
 ==================================== */
@@ -159,6 +144,15 @@ button:hover {
 
 .credit-card {
 	margin-top: 1.25em;
+}
+
+.conflict-label {
+	color: #eff0f1;
+}
+
+#title {
+	width: 100%;
+	height: 50px;
 }
 
 /* ================================= 

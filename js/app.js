@@ -1,9 +1,10 @@
 $(document).ready(function() {
 	
+	'use strict';
 	// Set focus on the first text field
 	$('#name').focus();
 	
-	$('.basic').append("<input type='text' id='other-title' placeholder='Your title'>");
+	$('.basic').append("<input type='text' id='other-title' placeholder='Your Title'>");
 	$('#other-title').hide();
 
 	$('#color').hide();
@@ -115,8 +116,7 @@ $(document).ready(function() {
 
 
 	// Payment Info section of the form. Display payment sections based on chosen payment option
-	$('#paypal').hide();
-	$('#bitcoin').hide();
+	$('#paypal, #bitcoin').hide();
 	$('#payment').val("credit card");
 
 	$('#payment').change(function() {
@@ -132,59 +132,90 @@ $(document).ready(function() {
 		}
 	});
 
-	$('.basic legend').append('<p id="error">Hello</p>');
-	$('#error').hide();
 
+var regExEmail = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
+var regExNumber = /^(0|[1-9][0-9]*)$/;
 
 	// Form Validation
 	$('form').submit(function(e) {
 		e.preventDefault();
 
-		var error = "";
+		$("label[id$=error]").remove();
 
 		// Name field can't be empty
 		if($('#name').val() === "") {
-			error = "Name must be entered"
+			$('html body').animate({scrollTop : $('.basic').offset().top});
+			$('#name').prev().append('<label id="name_error">Please enter Name</label>')
 			$('#name').focus();
 
 		// Email field must be a validly formatted e-mail address 
-		} else if ($('#mail').val() === "") {
-			error = "Email must be entered"
+		} else if ( !regExEmail.test($('#mail').val()) ) {
+			$('html body').animate({scrollTop : $('.basic').offset().top});
+			$('#mail').prev().append('<label id="email_error">Please enter a valid email</label>')
 			$('#mail').focus();
 
 		// At least one activity must be checked from the list under "Register for Actitivities."
 		} else if ($('.activities > label > input:checked').length === 0) {
-			console.log('nothing is ticked');
-			error = "Select at least one activity"
-			$('.activities').focus();
-			$('html body').animate({scrollTop : 0});
-
+			$('html body').animate({scrollTop : $('.activities').offset().top});
+			$('.activities').prepend('<label id="activity_error">Please select at least one activity</label>');
+			
 		// Payment option must be selected.
 		} else if ($('#payment').val() === "select_method") {
-			console.log('no payment option selected');
-			error = "Payment method is required"
-
+			$('html body').animate({scrollTop : $('#payment').offset().top});
+			$('#payment').prev().append('<label id="payment_error">Please select payment method</label>');
+			
 		// If "Credit card" is the selected payment option, 
 		// make sure the user supplied a credit card number, a zip code, and a 3 number CVV value.
-		} else if ($('#payment').val() === "credit card" && $('#cc-num').val() === "") {
-			console.log('credit card number');
-			error = "Enter credit card number"
-			$('html body').animate({scrollTop : 0});
+		} else if ( $('#payment').val() === "credit card"  && !regExNumber.test($('#cc-num').val())) {
+			$('html body').animate({scrollTop : $('#credit-card').offset().top});
+			$('#credit-card').prepend('<label id="cc_error">Please enter valid Card number</label>');
+			$('#cc-num').focus();
+
+		// Check credit card number length
+		} else if ($('#payment').val() === "credit card" && $('#cc-num').val().length < 16) {
+			$('html body').animate({scrollTop : $('#credit-card').offset().top});
+			$('#credit-card').prepend('<label id="cc_error">Please enter valid Card number</label>');
+			$('#cc-num').focus();
+
 		// zip code
-		} else if ($('#payment').val() === "credit card" && $('#zip').val() === "") {
-			console.log('zip');
-			error = "Enter zip code"
-			$('html body').animate({scrollTop : 0});
+		} else if (($('#payment').val() === "credit card") && (!regExNumber.test($('#zip').val()))) {
+			$('html body').animate({scrollTop : $('#credit-card').offset().top});
+			$('#credit-card').prepend('<label id="zip_error">Please enter zip code</label>');
+			$('#zip').focus();
 
 		// CVV value.
-		} else if ($('#payment').val() === "credit card" && $('#cvv').val() === "") {
-			console.log('cvv');
-			error = "Enter CVV number"
-			$('html body').animate({scrollTop : 0});
-		} 
+		} else if ($('#payment').val() === "credit card" && $('#cvv').val().length < 3 ) {
+			$('html body').animate({scrollTop : $('#credit-card').offset().top});
+			$('#credit-card').prepend('<label id="cvv_error">Please enter CVV number</label>');
+			$('#cvv').focus();
 
-		document.getElementById('error').innerHTML = 'Error: ' + error;
-		$('#error').show();
+		} else {
+			
+			alert('Form has been submitted succesfully');
+			$('html body').animate({scrollTop : 0});
+
+			// Clear the fields 			
+			$("input").val("");
+			$('#title').val("full-stack js developer");
+			
+			$('#size').val("medium");
+			$('#design').val('Select Theme');
+			$('#colors-js-puns > label').hide();
+			$('#color').hide();
+			$('#exp-year').val("2016");
+			$('#exp-month').val("1");
+
+			$('input[type="checkbox"]').prop('checked', false)
+			$('input[type="checkbox"]').prop('disabled', false);
+			$('input[type="checkbox"]').parent().removeClass('conflict-label');
+			
+			total = 0;
+			$('#total').html("");
+
+			$('#payment').val("credit card");
+			$('#credit-card').show();
+			$('#bitcoin, #paypal').hide();
+		}
 
 	})
 
