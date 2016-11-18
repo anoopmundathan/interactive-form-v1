@@ -1,6 +1,7 @@
 $(document).ready(function() {
 	
 	'use strict';
+	
 	// Set focus on the first text field
 	$('#name').focus();
 	
